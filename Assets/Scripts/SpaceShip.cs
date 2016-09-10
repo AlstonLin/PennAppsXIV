@@ -117,7 +117,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		Vector3 forward = transform.forward;
 		controller.Move (forward * MOVE_SPEED * Time.deltaTime);
 		JSONObject json = new JSONObject ();
-		json.AddField ("id", NetworkController.playerID);
+		json.AddField ("player_id", NetworkController.playerID);
 		json.AddField ("location_x", transform.position.x);
 		json.AddField ("location_y", transform.position.y);
 		json.AddField ("location_z", transform.position.z);

@@ -18,7 +18,7 @@ public class NetworkController : MonoBehaviour {
 	}
 	void initializeSocketEvents () {
 		mySocket.On ("player_initialize", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+			string id = e.data.GetField("player_id").str;
 			playerID = id;
 
 			Vector3 location = getLocationField(e.data);
@@ -28,7 +28,10 @@ public class NetworkController : MonoBehaviour {
 			players[id].transform.rotation = rotation;
 		});
 		mySocket.On ("location_update", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+			Debug.Log("DATA: " + e.ToString());
+			string id = e.data.GetField("player_id").ToString();
+			Debug.Log("UPDATED " + id + " !");
+			Debug.Log("THIS PLAYER ID: " + playerID);
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
 				Quaternion rotation = getRotationField(e.data);
@@ -42,18 +45,20 @@ public class NetworkController : MonoBehaviour {
 		
 		});
 		mySocket.On ("player_death", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+			string id = e.data.GetField("player_id").ToString();
 			players[id].onDeath();
 		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+			string id = e.data.GetField("player_id").ToString();
 			if (!id.Equals(playerID)) {
 				return;
 			}
 		});
-		mySocket.On ("player_disconnect", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+		mySocket.On ("player_leave", (SocketIOEvent e) => {
+			string id = e.data.GetField("player_id").ToString();
+			Debug.Log("DISCONNECTED " + id + " !");
 			if (players.ContainsKey(id)){
+				Debug.Log("DESTROYED!");
 				Destroy(players[id]);
 				players.Remove(id);
 			}
