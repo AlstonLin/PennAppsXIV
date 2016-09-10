@@ -5,10 +5,10 @@ using SocketIO;
 
 public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
-	public GameObject playerPrefab;
+	public SpaceShipSkeleton playerPrefab;
 	public GameObject ammoBoxPrefab;
 
-	private Dictionary<string, GameObject> players = new Dictionary<string, GameObject>();
+	private Dictionary<string, SpaceShipSkeleton> players = new Dictionary<string, SpaceShipSkeleton>();
 	public static string playerID = "";
 	private SocketIOComponent mySocket;
 
@@ -23,8 +23,8 @@ public class NetworkController : MonoBehaviour {
 			Quaternion initialRotation = getRotationField(e.data);
 
 			Debug.Log(initialLocation);
-	
-			GameObject newPlayer = Instantiate(playerPrefab, initialLocation, initialRotation) as GameObject;
+
+            SpaceShipSkeleton newPlayer = Instantiate(playerPrefab, initialLocation, initialRotation) as SpaceShipSkeleton;
 			players.Add(id, newPlayer);
 		});
 		mySocket.On ("player_initialize", (SocketIOEvent e) => {
@@ -52,7 +52,7 @@ public class NetworkController : MonoBehaviour {
 		});
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();
-			((SpaceShip)players[id]).onDeath();
+			players[id].onDeath();
 		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();
@@ -60,6 +60,7 @@ public class NetworkController : MonoBehaviour {
 				return;
 			}
 		});
+        /*
 		mySocket.On ("ammo_spawn", (SocketIOEvent e) => {
 			Debug.Log("RECEIVED COMMAND! " + e.ToString());
 			int amount, x, y, z;
@@ -70,6 +71,7 @@ public class NetworkController : MonoBehaviour {
 			Debug.Log("RECEIVED COMMAND2!");
 			spawnAmmo(amount, x, y, z);
 		});
+        */
 	}
 
 	void spawnAmmo (int amount, float x, float y, float z){
