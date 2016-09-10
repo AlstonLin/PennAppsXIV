@@ -10,20 +10,23 @@ public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
 
 	void Start () {
+		socketObj = GameObject.Find("SocketIO");
+		mySocket = (SocketIOComponent) socketObj.GetComponent (typeof(SocketIOComponent));
 		initializeSocketEvents ();
-		mySocket.Emit ("new_player");
 	}
 	
 	void Update () {
-	
 	}
 
-	void initializeSocketEvents() {
-		mySocket = (SocketIOComponent) socketObj.GetComponent (typeof(SocketIOComponent));
+	void initializeSocketEvents () {
 		mySocket.On ("new_player", (SocketIOEvent e) => {
 			Debug.Log(e.ToString());
 			players.Add(e.data.GetField("id").ToString(), new GameObject ());
 		});
+		mySocket.On ("id_assignment", (SocketIOEvent e) => {
+			Debug.Log(e.ToString());
+		});
+		mySocket.Emit ("new_player_joined");
 	}
 		
 }

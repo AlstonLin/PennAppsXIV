@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour {
 		controller = (CharacterController) GetComponent(typeof(CharacterController));
 		go = GameObject.Find("SocketIO");
 		mySocket = (SocketIOComponent) go.GetComponent(typeof(SocketIOComponent));
-
 	}
 
 	void Update () {
