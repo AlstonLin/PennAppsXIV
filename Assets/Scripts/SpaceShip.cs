@@ -76,7 +76,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		if (ammoAmount <= 0){
 			return;
 		}
-        GetHit(); //TESTING PURPOSES
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
 		socket.Emit ("shot_fired", new JSONObject());
@@ -85,11 +84,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     void Update() {
-		if (!id.Equals(NetworkController.playerID)) {
-			return;
-		}
 		moveForward ();
-
 		//Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
 
 		if (fireTimeRemaining > 0) {
@@ -99,7 +94,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		if (IsPressed () && fireTimeRemaining <= 0) {
 			Fire ();
 		}
-
     }
 
     private bool IsPressed() {
