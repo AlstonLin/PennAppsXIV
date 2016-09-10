@@ -12,14 +12,15 @@ public class PlayerController : MonoBehaviour {
 	private int id = -1;
 
 	private GameObject go;
-	private SocketIOComponent sock;
+	private SocketIOComponent mySocket;
 
 	private CharacterController controller;
 
 	void Start () {
 		controller = (CharacterController) GetComponent(typeof(CharacterController));
 		go = GameObject.Find("SocketIO");
-		sock = (SocketIOComponent) go.GetComponent(typeof(SocketIOComponent));
+		mySocket = (SocketIOComponent) go.GetComponent(typeof(SocketIOComponent));
+
 	}
 
 	void Update () {
@@ -50,7 +51,7 @@ public class PlayerController : MonoBehaviour {
 	private bool isPressed (){
 		if (Input.GetMouseButtonDown(0)) {
 			pressed = true;
-			sock.Emit("melissa_mouse_down"); 
+			mySocket.Emit("melissa_mouse_down"); 
 		} else if (Input.GetMouseButtonUp(0)) {
 			pressed = false;
 		}
