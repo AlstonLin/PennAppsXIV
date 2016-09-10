@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour {
 
 	private bool pressed = false;
 	private float fireTimeRemaining = 0;
+	private int id = -1;
 
 	private GameObject go;
 	private SocketIOComponent sock;
@@ -22,6 +23,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update () {
+		if (id != NetworkController.playerID) {
+			return;
+		}
 		moveForward ();
 		// Updates the fire timer
 		if (fireTimeRemaining > 0) {
