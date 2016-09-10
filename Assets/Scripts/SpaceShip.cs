@@ -65,7 +65,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     public void Fire() {
-        Debug.Log("Fire");
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
     }

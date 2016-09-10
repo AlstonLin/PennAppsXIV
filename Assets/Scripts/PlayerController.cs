@@ -27,33 +27,10 @@ public class PlayerController : MonoBehaviour {
 			return;
 		}
 		moveForward ();
-		// Updates the fire timer
-		if (fireTimeRemaining > 0) {
-			fireTimeRemaining -= Time.deltaTime;
-		}
-		// Checks for fire
-		if (isPressed () && fireTimeRemaining <= 0) {
-			fire ();
-		}
-	}
-
-	private void fire (){
-		fireTimeRemaining = FIRE_INTERVAL;
-		Debug.Log ("FIRE!");
 	}
 
 	private void moveForward (){
 		Vector3 forward = transform.forward;
 		controller.Move (forward * MOVE_SPEED * Time.deltaTime);
-	}
-
-	private bool isPressed (){
-		if (Input.GetMouseButtonDown(0)) {
-			pressed = true;
-			sock.Emit("melissa_mouse_down"); 
-		} else if (Input.GetMouseButtonUp(0)) {
-			pressed = false;
-		}
-		return GvrViewer.Instance.Triggered || pressed;
 	}
 }
