@@ -7,11 +7,11 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 	private const float MOVE_SPEED = 1.0f;
 	private const int STARTING_AMMO = 30;
 
-	public GameObject laser, spaceShip, socketObj, ammoObj;
+    public GameObject laser, spaceShip, socketObj;
+    //public Text ammoText;
     public GameObject[] healthBars;
 	public CharacterController controller;
 
-	private Text ammoText;
 	private SocketIOComponent socket;
     private Vector3 startingPosition;
 
@@ -24,10 +24,9 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
     void Start() {
 		socket = socketObj.GetComponent (typeof(SocketIOComponent)) as SocketIOComponent;
-		ammoText = ammoObj.GetComponent (typeof(Text)) as Text;
         startingPosition = transform.localPosition;
         SetGazedAt(false);
-		setAmmoText ();
+		//setAmmoText ();
     }
 
     void LateUpdate() {
@@ -73,9 +72,11 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     public void Fire() {
+        /*
 		if (ammoAmount <= 0){
 			return;
 		}
+        */
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
 		socket.Emit ("shot_fired", new JSONObject());
@@ -84,7 +85,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		JSONObject json = new JSONObject ();
 		json.SetField ("id", id);
 		socket.Emit ("shot_fired");
-
     }
 
     void Update() {
@@ -110,9 +110,11 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         return GvrViewer.Instance.Triggered || pressed;
     }
 
+    /*
 	private void setAmmoText (){
 		ammoText.text = "Ammo: " + ammoAmount;
 	}
+    */
 
 	private void moveForward (){
 		Vector3 forward = transform.forward;
