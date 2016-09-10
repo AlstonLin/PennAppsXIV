@@ -81,9 +81,9 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
 		socket.Emit ("shot_fired", new JSONObject());
 		ammoAmount--;
-		setAmmoText ();
+		//setAmmoText ();
 		JSONObject json = new JSONObject ();
-		json.SetField ("id", id);
+		json.AddField ("id", id);
 		socket.Emit ("shot_fired");
     }
 
@@ -146,7 +146,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public void onDeath() {
         Destroy(spaceShip);
 		JSONObject json = new JSONObject ();
-		json.SetField ("id", id);
+		json.AddField ("id", id);
 		socket.Emit ("player_death", json);
     }
 
