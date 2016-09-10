@@ -27,19 +27,6 @@ public class PlayerController : MonoBehaviour {
 			return;
 		}
 		moveForward ();
-		// Updates the fire timer
-		if (fireTimeRemaining > 0) {
-			fireTimeRemaining -= Time.deltaTime;
-		}
-		// Checks for fire
-		if (isPressed () && fireTimeRemaining <= 0) {
-			fire ();
-		}
-	}
-
-	private void fire (){
-		fireTimeRemaining = FIRE_INTERVAL;
-		Debug.Log ("FIRE!");
 	}
 
 	private void moveForward (){
