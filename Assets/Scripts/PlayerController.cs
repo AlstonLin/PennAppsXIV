@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using SocketIO;
 
 public class PlayerController : MonoBehaviour {
-	private const float MOVE_SPEED = 0.2f;
+	private const float MOVE_SPEED = 1.0f;
 	private const float FIRE_INTERVAL = 0.5f;
 
 	private bool pressed = false;
