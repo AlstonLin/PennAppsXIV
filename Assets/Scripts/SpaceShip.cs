@@ -143,7 +143,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         }
     }
 
-    void onDeath() {
+    public void onDeath() {
         Destroy(spaceShip);
     }
 
