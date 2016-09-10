@@ -81,6 +81,10 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		socket.Emit ("shot_fired", new JSONObject());
 		ammoAmount--;
 		setAmmoText ();
+		JSONObject json = new JSONObject ();
+		json.SetField ("id", id);
+		socket.Emit ("shot_fired");
+
     }
 
     void Update() {
@@ -139,6 +143,9 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
     public void onDeath() {
         Destroy(spaceShip);
+		JSONObject json = new JSONObject ();
+		json.SetField ("id", id);
+		socket.Emit ("player_death", json);
     }
 
     #region IGvrGazeResponder implementation
