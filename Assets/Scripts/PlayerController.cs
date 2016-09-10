@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using SocketIO;
 
 public class PlayerController : MonoBehaviour {
 	private const float MOVE_SPEED = 0.2f;
@@ -8,10 +10,15 @@ public class PlayerController : MonoBehaviour {
 	private bool pressed = false;
 	private float fireTimeRemaining = 0;
 
+	private GameObject go;
+	private SocketIOComponent sock;
+
 	private CharacterController controller;
 
 	void Start () {
 		controller = (CharacterController) GetComponent(typeof(CharacterController));
+		go = GameObject.Find("SocketIO");
+		sock = (SocketIOComponent) go.GetComponent(typeof(SocketIOComponent));
 	}
 
 	void Update () {
@@ -39,6 +46,7 @@ public class PlayerController : MonoBehaviour {
 	private bool isPressed (){
 		if (Input.GetMouseButtonDown(0)) {
 			pressed = true;
+			sock.Emit("melissa_mouse_down"); 
 		} else if (Input.GetMouseButtonUp(0)) {
 			pressed = false;
 		}

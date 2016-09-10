@@ -122,7 +122,16 @@ namespace SocketIO
 		public void Start()
 		{
 			if (autoConnect) { 
-				Connect(); }
+				Connect();
+
+				GameObject go = GameObject.Find("SocketIO");
+				SocketIOComponent sock = (SocketIOComponent) go.GetComponent(typeof(SocketIOComponent));
+
+				sock.On ("move_forward_Utkarsh", (SocketIOEvent e) => {
+					Debug.Log ("Utkarsh move forward");
+				});
+			}
+
 		}
 
 		public void Update()
@@ -178,11 +187,6 @@ namespace SocketIO
 
 			pingThread = new Thread(RunPingThread);
 			pingThread.Start(ws);
-
-			//socket.OnMessage ("hello_new_user", (SocketIOEvent e) => { Debug.Log(e.name);});
-			socket.OnMessage += (sender, e) => {
-				Debug.Log(e.Data);
-			};
 		}
 
 		public void Close()
