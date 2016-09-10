@@ -76,7 +76,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		if (ammoAmount <= 0){
 			return;
 		}
-        GetHit(); //TESTING PURPOSES
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
 		socket.Emit ("shot_fired", new JSONObject());
