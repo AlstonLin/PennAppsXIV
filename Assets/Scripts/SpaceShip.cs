@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
+using SocketIO;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
+	public GameObject laser, spaceShip, socketObj;
+	public int hp;
     public float fireInterval;
 
+	private SocketIOComponent socket;
     private Vector3 startingPosition;
-    public GameObject laser, spaceShip;
-
-    public int hp;
 
     private float fireTimeRemaining = 0;
     private bool pressed = false;
 
     void Start() {
+		socket = socketObj.GetComponent (typeof(SocketIOComponent)) as SocketIOComponent;
         startingPosition = transform.localPosition;
         SetGazedAt(false);
     }
@@ -62,6 +64,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public void Fire() {
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
+		socket.Emit ("shot_fired", new JSONObject());
     }
 
     void Update() {

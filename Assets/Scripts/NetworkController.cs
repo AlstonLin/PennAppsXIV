@@ -20,7 +20,7 @@ public class NetworkController : MonoBehaviour {
 	}
 
 	void initializeSocketEvents () {
-		mySocket.On ("new_player", (SocketIOEvent e) => {
+		mySocket.On ("player_join", (SocketIOEvent e) => {
 			Debug.Log(e.ToString());
 			GameObject newPlayer = Instantiate(player);
 			players.Add(e.data.GetField("id").ToString(), newPlayer);
@@ -29,7 +29,6 @@ public class NetworkController : MonoBehaviour {
 		mySocket.On ("id_assignment", (SocketIOEvent e) => {
 			Debug.Log(e.ToString());
 		});
-		mySocket.Emit ("new_player_joined");
 	}
 		
 }
