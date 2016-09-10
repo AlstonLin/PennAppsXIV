@@ -12,7 +12,7 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 	private SocketIOComponent socket;
     private Vector3 startingPosition;
 
-	private float id = -1;
+	private string id = "";
 
     void Start() {
 		socket = socketObj.GetComponent (typeof(SocketIOComponent)) as SocketIOComponent;
@@ -68,11 +68,7 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
-        GetHit();
-    }
-
-    public void GetHit() {
-        hp--;
+		hp--;
     }
 
     public void onDeath() {
