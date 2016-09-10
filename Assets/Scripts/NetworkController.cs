@@ -35,6 +35,5 @@ public class NetworkController : MonoBehaviour {
 				// players[id].transform.position =
 			}
 		});
-	}
-		
+	}		
 }
