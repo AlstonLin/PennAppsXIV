@@ -6,6 +6,7 @@ using SocketIO;
 public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
 	public GameObject playerPrefab;
+	public GameObject ammoBoxPrefab;
 
 	private Dictionary<string, GameObject> players = new Dictionary<string, GameObject>();
 	public static int playerID = -1;
@@ -15,7 +16,6 @@ public class NetworkController : MonoBehaviour {
 		mySocket = (SocketIOComponent) socketObj.GetComponent (typeof(SocketIOComponent));
 		initializeSocketEvents ();
 	}
-
 	void initializeSocketEvents () {
 		mySocket.On ("player_join", (SocketIOEvent e) => {
 			Debug.Log(e.ToString());
@@ -35,5 +35,21 @@ public class NetworkController : MonoBehaviour {
 				// players[id].transform.position =
 			}
 		});
-	}		
+		mySocket.On ("ammo_spawn", (SocketIOEvent e) => {
+			Debug.Log("RECEIVED COMMAND! " + e.ToString());
+			int amount, x, y, z;
+			int.TryParse (e.data.GetField("amount").ToString(), out amount);
+			int.TryParse (e.data.GetField("location_x").ToString(), out x);
+			int.TryParse (e.data.GetField("location_y").ToString(), out y);
+			int.TryParse (e.data.GetField("location_z").ToString(), out z);
+			Debug.Log("RECEIVED COMMAND2!");
+			spawnAmmo(amount, x, y, z);
+		});
+	}
+
+	void spawnAmmo (int amount, float x, float y, float z){
+		Debug.Log ("AMMO SPAWN: (" + x + ", " + y + ", " + z + ")");
+		Vector3 newPos = new Vector3(x, y, z);
+		GameObject ammoBox = Instantiate(ammoBoxPrefab, newPos, Quaternion.identity) as GameObject;
+	}
 }
