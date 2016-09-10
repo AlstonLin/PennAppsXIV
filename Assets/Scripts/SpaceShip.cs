@@ -1,29 +1,33 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using SocketIO;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 	private const float MOVE_SPEED = 1.0f;
+	private const int STARTING_AMMO = 30;
 
-	public GameObject laser, spaceShip, socketObj;
-
+	public GameObject laser, spaceShip, socketObj, ammoObj;
     public GameObject[] healthBars;
-
 	public CharacterController controller;
-	public int hp;
-    public float fireInterval;
 
+	private Text ammoText;
 	private SocketIOComponent socket;
     private Vector3 startingPosition;
 
-	private float id = -1;
+	private string id = "";
+	public int hp;
+	public float fireInterval;
+	private float ammoAmount = STARTING_AMMO;
     private float fireTimeRemaining = 0;
     private bool pressed = false;
 
     void Start() {
 		socket = socketObj.GetComponent (typeof(SocketIOComponent)) as SocketIOComponent;
+		ammoText = ammoObj.GetComponent (typeof(Text)) as Text;
         startingPosition = transform.localPosition;
         SetGazedAt(false);
+		setAmmoText ();
     }
 
     void LateUpdate() {
@@ -69,14 +73,19 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     public void Fire() {
+		if (ammoAmount <= 0){
+			return;
+		}
         GetHit(); //TESTING PURPOSES
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
 		socket.Emit ("shot_fired", new JSONObject());
+		ammoAmount--;
+		setAmmoText ();
     }
 
     void Update() {
-		if (id != NetworkController.playerID) {
+		if (!id.Equals(NetworkController.playerID)) {
 			return;
 		}
 		moveForward ();
@@ -103,11 +112,15 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         return GvrViewer.Instance.Triggered || pressed;
     }
 
+	private void setAmmoText (){
+		ammoText.text = "Ammo: " + ammoAmount;
+	}
+
 	private void moveForward (){
 		Vector3 forward = transform.forward;
 		controller.Move (forward * MOVE_SPEED * Time.deltaTime);
 		JSONObject json = new JSONObject ();
-		json.AddField ("player_id", NetworkController.playerID);
+		json.AddField ("id", NetworkController.playerID);
 		json.AddField ("location_x", transform.position.x);
 		json.AddField ("location_y", transform.position.y);
 		json.AddField ("location_z", transform.position.z);
