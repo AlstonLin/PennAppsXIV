@@ -51,6 +51,13 @@ public class NetworkController : MonoBehaviour {
 				return;
 			}
 		});
+		mySocket.On ("player_disconnect", (SocketIOEvent e) => {
+			string id = e.data.GetField("id").ToString();
+			if (players.ContainsKey(id)){
+				Destroy(players[id]);
+				players.Remove(id);
+			}
+		});
         /*
 		mySocket.On ("ammo_spawn", (SocketIOEvent e) => {
 			Debug.Log("RECEIVED COMMAND! " + e.ToString());
