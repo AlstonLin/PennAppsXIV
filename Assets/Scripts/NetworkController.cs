@@ -28,10 +28,7 @@ public class NetworkController : MonoBehaviour {
 			players[id].transform.rotation = rotation;
 		});
 		mySocket.On ("location_update", (SocketIOEvent e) => {
-			Debug.Log("DATA: " + e.ToString());
 			string id = e.data.GetField("player_id").ToString();
-			Debug.Log("UPDATED " + id + " !");
-			Debug.Log("THIS PLAYER ID: " + playerID);
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
 				Quaternion rotation = getRotationField(e.data);
@@ -63,10 +60,8 @@ public class NetworkController : MonoBehaviour {
 		});
 		mySocket.On ("player_leave", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").ToString();
-			Debug.Log("DISCONNECTED " + id + " !");
 			if (players.ContainsKey(id)){
-				Debug.Log("DESTROYED!");
-				Destroy(players[id]);
+				Destroy(players[id].spaceShip);
 				players.Remove(id);
 			}
 		});
