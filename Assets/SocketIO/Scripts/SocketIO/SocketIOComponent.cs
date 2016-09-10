@@ -42,7 +42,7 @@ namespace SocketIO
 	{
 		#region Public Properties
 
-		public string url = "http://127.0.0.1:8080/socket.io/?EIO=4&transport=websocket";
+		public string url = "ws://10.103.229.88:8080/socket.io/socket.io.js";
 		public bool autoConnect = true;
 		public int reconnectDelay = 5;
 		public float ackExpirationTime = 1800f;
@@ -99,7 +99,7 @@ namespace SocketIO
 			sid = null;
 			packetId = 0;
 
-			ws = new WebSocket(url);
+			ws = new WebSocket(url);	
 			ws.OnOpen += OnOpen;
 			ws.OnMessage += OnMessage;
 			ws.OnError += OnError;
@@ -121,7 +121,8 @@ namespace SocketIO
 
 		public void Start()
 		{
-			if (autoConnect) { Connect(); }
+			if (autoConnect) { 
+				Connect(); }
 		}
 
 		public void Update()
@@ -177,6 +178,11 @@ namespace SocketIO
 
 			pingThread = new Thread(RunPingThread);
 			pingThread.Start(ws);
+
+			//socket.OnMessage ("hello_new_user", (SocketIOEvent e) => { Debug.Log(e.name);});
+			socket.OnMessage += (sender, e) => {
+				Debug.Log(e.Data);
+			};
 		}
 
 		public void Close()
