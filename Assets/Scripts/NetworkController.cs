@@ -8,6 +8,7 @@ public class NetworkController : MonoBehaviour {
 	public static int playerID = -1;
 	private SocketIOComponent mySocket;
 	public GameObject socketObj;
+	public GameObject player;
 
 	void Start () {
 		socketObj = GameObject.Find("SocketIO");
@@ -21,7 +22,9 @@ public class NetworkController : MonoBehaviour {
 	void initializeSocketEvents () {
 		mySocket.On ("new_player", (SocketIOEvent e) => {
 			Debug.Log(e.ToString());
-			players.Add(e.data.GetField("id").ToString(), new GameObject ());
+			GameObject newPlayer = Instantiate(player);
+			players.Add(e.data.GetField("id").ToString(), newPlayer);
+
 		});
 		mySocket.On ("id_assignment", (SocketIOEvent e) => {
 			Debug.Log(e.ToString());
