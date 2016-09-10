@@ -5,7 +5,9 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public float fireInterval;
 
     private Vector3 startingPosition;
-    public GameObject laser;
+    public GameObject laser, spaceShip;
+
+    public int hp;
 
     private float fireTimeRemaining = 0;
     private bool pressed = false;
@@ -57,13 +59,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         GvrViewer.Controller.directRender = !GvrViewer.Controller.directRender;
     }
 
-    public void TeleportRandomly() {
-        Vector3 direction = Random.onUnitSphere;
-        direction.y = Mathf.Clamp(direction.y, 0.5f, 1f);
-        float distance = 10 * Random.value + 1.5f;
-        transform.localPosition = direction * distance;
-    }
-
     public void Fire() {
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
@@ -79,6 +74,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		if (IsPressed () && fireTimeRemaining <= 0) {
 			Fire ();
 		}
+
     }
 
     private bool IsPressed() {
@@ -93,7 +89,18 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
-        //loseHealth();
+        getHit();
+    }
+
+    void getHit() {
+        hp--;
+        if(hp < 1) {
+            onDeath();
+        }
+    }
+
+    void onDeath() {
+        Destroy(spaceShip);
     }
 
     #region IGvrGazeResponder implementation
