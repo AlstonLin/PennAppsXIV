@@ -85,11 +85,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     void Update() {
-		if (!id.Equals(NetworkController.playerID)) {
-			return;
-		}
 		moveForward ();
-
 		//Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
 
 		if (fireTimeRemaining > 0) {
@@ -99,7 +95,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		if (IsPressed () && fireTimeRemaining <= 0) {
 			Fire ();
 		}
-
     }
 
     private bool IsPressed() {
