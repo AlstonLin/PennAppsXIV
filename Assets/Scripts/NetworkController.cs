@@ -19,21 +19,23 @@ public class NetworkController : MonoBehaviour {
 	void initializeSocketEvents () {
 		mySocket.On ("player_join", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();
-			playerID = id;
-
 			Vector3 initialLocation = getLocationField(e.data);
 			Quaternion initialRotation = getRotationField(e.data);
 
 			Debug.Log(initialLocation);
 	
 			GameObject newPlayer = Instantiate(playerPrefab, initialLocation, initialRotation) as GameObject;
-			players.Add(e.data.GetField("id").ToString(), newPlayer);
+			players.Add(id, newPlayer);
 		});
 		mySocket.On ("player_initialize", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();
-			Debug.Log(id);
-
 			playerID = id;
+
+			Vector3 location = getLocationField(e.data);
+			Quaternion rotation = getRotationField(e.data);
+
+			players[id].transform.position = location;
+			players[id].transform.rotation = rotation;
 		});
 		mySocket.On ("location_update", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();
@@ -48,12 +50,15 @@ public class NetworkController : MonoBehaviour {
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
 		
 		});
+		mySocket.On ("player_death", (SocketIOEvent e) => {
+			string id = e.data.GetField("id").ToString();
+			((SpaceShip)players[id]).onDeath();
+		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();
 			if (!id.Equals(playerID)) {
 				return;
 			}
-
 		});
 		mySocket.On ("ammo_spawn", (SocketIOEvent e) => {
 			Debug.Log("RECEIVED COMMAND! " + e.ToString());
