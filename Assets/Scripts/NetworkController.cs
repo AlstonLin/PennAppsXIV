@@ -48,7 +48,7 @@ public class NetworkController : MonoBehaviour {
 			}
 		});
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
-		
+
 		});
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();

@@ -73,9 +73,6 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 
     public void GetHit() {
         hp--;
-        if(hp < 1) {
-            onDeath();
-        }
     }
 
     public void onDeath() {

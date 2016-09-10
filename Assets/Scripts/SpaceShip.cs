@@ -132,6 +132,9 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     void GetHit() {
         hp--;
         Destroy(healthBars[hp]);
+		JSONObject json = new JSONObject ();
+		json.AddField ("id", id);
+		socket.Emit ("player_health_update", json);
         if(hp < 1) {
             onDeath();
         }
