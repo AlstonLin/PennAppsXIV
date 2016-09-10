@@ -6,6 +6,9 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 	private const float MOVE_SPEED = 1.0f;
 
 	public GameObject laser, spaceShip, socketObj;
+
+    public GameObject[] healthBars;
+
 	public CharacterController controller;
 	public int hp;
     public float fireInterval;
@@ -66,6 +69,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     public void Fire() {
+        GetHit(); //TESTING PURPOSES
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
 		socket.Emit ("shot_fired", new JSONObject());
@@ -106,11 +110,12 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
-        getHit();
+        GetHit();
     }
 
-    void getHit() {
+    void GetHit() {
         hp--;
+        Destroy(healthBars[hp]);
         if(hp < 1) {
             onDeath();
         }
