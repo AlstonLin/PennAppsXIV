@@ -17,16 +17,6 @@ public class NetworkController : MonoBehaviour {
 		initializeSocketEvents ();
 	}
 	void initializeSocketEvents () {
-		mySocket.On ("player_join", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
-			Vector3 initialLocation = getLocationField(e.data);
-			Quaternion initialRotation = getRotationField(e.data);
-
-			Debug.Log(initialLocation);
-
-            SpaceShipSkeleton newPlayer = Instantiate(playerPrefab, initialLocation, initialRotation) as SpaceShipSkeleton;
-			players.Add(id, newPlayer);
-		});
 		mySocket.On ("player_initialize", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();
 			playerID = id;
@@ -42,9 +32,10 @@ public class NetworkController : MonoBehaviour {
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
 				Quaternion rotation = getRotationField(e.data);
-
 				players[id].transform.position = location;
 				players[id].transform.rotation = rotation;
+			} else {
+				spawnPlayer(id, e);
 			}
 		});
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
@@ -72,6 +63,13 @@ public class NetworkController : MonoBehaviour {
 			spawnAmmo(amount, x, y, z);
 		});
         */
+	}
+
+	void spawnPlayer (string id, SocketIOEvent e){
+		Vector3 initialLocation = getLocationField(e.data);
+		Quaternion initialRotation = getRotationField(e.data);
+		SpaceShipSkeleton newPlayer = Instantiate(playerPrefab, initialLocation, initialRotation) as SpaceShipSkeleton;
+		players.Add(id, newPlayer);
 	}
 
 	void spawnAmmo (int amount, float x, float y, float z){
