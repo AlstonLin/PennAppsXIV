@@ -3,13 +3,17 @@ using SocketIO;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
+	private const float MOVE_SPEED = 1.0f;
+
 	public GameObject laser, spaceShip, socketObj;
+	public CharacterController controller;
 	public int hp;
     public float fireInterval;
 
 	private SocketIOComponent socket;
     private Vector3 startingPosition;
 
+	private float id = -1;
     private float fireTimeRemaining = 0;
     private bool pressed = false;
 
@@ -68,7 +72,12 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     void Update() {
-        //Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
+		if (id != NetworkController.playerID) {
+			return;
+		}
+		moveForward ();
+
+		//Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
 
 		if (fireTimeRemaining > 0) {
 			fireTimeRemaining -= Time.deltaTime;
@@ -89,6 +98,11 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         }
         return GvrViewer.Instance.Triggered || pressed;
     }
+
+	private void moveForward (){
+		Vector3 forward = transform.forward;
+		controller.Move (forward * MOVE_SPEED * Time.deltaTime);
+	}
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");

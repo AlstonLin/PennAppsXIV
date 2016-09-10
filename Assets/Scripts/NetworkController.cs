@@ -15,9 +15,6 @@ public class NetworkController : MonoBehaviour {
 		mySocket = (SocketIOComponent) socketObj.GetComponent (typeof(SocketIOComponent));
 		initializeSocketEvents ();
 	}
-	
-	void Update () {
-	}
 
 	void initializeSocketEvents () {
 		mySocket.On ("player_join", (SocketIOEvent e) => {
