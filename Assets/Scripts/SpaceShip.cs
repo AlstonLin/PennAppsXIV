@@ -1,22 +1,14 @@
-﻿// Copyright 2014 Google Inc. All rights reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
+    public float fireInterval;
+
     private Vector3 startingPosition;
+    public GameObject laser;
+
+    private float fireTimeRemaining = 0;
+    private bool pressed = false;
 
     void Start() {
         startingPosition = transform.localPosition;
@@ -72,10 +64,43 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         transform.localPosition = direction * distance;
     }
 
+    public void Fire() {
+        Debug.Log("Fire");
+        fireTimeRemaining = fireInterval;
+        GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, transform.eulerAngles.z)) as GameObject;
+    }
+
+    void Update() {
+        //Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
+
+		if (fireTimeRemaining > 0) {
+			fireTimeRemaining -= Time.deltaTime;
+		}
+		// Checks for fire
+		if (IsPressed () && fireTimeRemaining <= 0) {
+			Fire ();
+		}
+    }
+
+    private bool IsPressed() {
+        if (Input.GetMouseButtonDown(0)) {
+            pressed = true;
+        }
+        else if (Input.GetMouseButtonUp(0)) {
+            pressed = false;
+        }
+        return GvrViewer.Instance.Triggered || pressed;
+    }
+
+    void OnCollisionEnter(Collision collisionInfo) {
+        Debug.Log("spaceship: onCollisionEnter");
+        //loseHealth();
+    }
+
     #region IGvrGazeResponder implementation
 
-    /// Called when the user is looking on a GameObject with this script,
-    /// as long as it is set to an appropriate layer (see GvrGaze).
+        /// Called when the user is looking on a GameObject with this script,
+        /// as long as it is set to an appropriate layer (see GvrGaze).
     public void OnGazeEnter() {
         SetGazedAt(true);
     }
@@ -87,9 +112,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     /// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
-    public void OnGazeTrigger() {
-        TeleportRandomly();
-    }
+    public void OnGazeTrigger() {    }
 
     #endregion
 }
