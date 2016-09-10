@@ -44,9 +44,16 @@ public class NetworkController : MonoBehaviour {
 			int hp = Int32.Parse(e.data.GetField("hp").ToString());
 			players[id].hp = hp;
 		});
+		mySocket.On ("shot_fired", (SocketIOEvent e) => {
+			string id = e.data.GetField("id").ToString();
+			if (players.ContainsKey(id)) {
+				players[id].Fire();
+			}
+		});
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();
 			players[id].onDeath();
+
 		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
 			string id = e.data.GetField("id").ToString();
