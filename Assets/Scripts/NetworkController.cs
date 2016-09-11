@@ -11,6 +11,7 @@ public class NetworkController : MonoBehaviour {
 	public GameObject ammoBoxPrefab;
 
     public GameObject clientPrefab;
+    public SpaceShip clientSpaceShip;
 
 	private Dictionary<string, SpaceShipSkeleton> players = new Dictionary<string, SpaceShipSkeleton>();
 	public static string playerID = "";
@@ -84,10 +85,9 @@ public class NetworkController : MonoBehaviour {
                 Debug.Log("no more players, you win?");
             }
 
-            /*
-			SpaceShip myShip = GetComponent<SpaceShip>();
-			myShip.kills++;
-            */
+            if(playerID.Equals(shooterID)) {
+                clientSpaceShip.kills++;
+            }
 		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;

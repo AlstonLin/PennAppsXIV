@@ -81,15 +81,11 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		}
         */
         fireTimeRemaining = fireInterval;
-        /*
-<<<<<<< HEAD
+
+        //currently broken
         Laser newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as Laser;
 		newLaser.shooterId  = NetworkController.playerID;
-=======
-        GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
-		((Laser)newLaser).shooterId  = NetworkController.playerID;
->>>>>>> c4874ed5d5c8352927ac0b11156b198dd8320fd1
-*/
+
 		ammoAmount--;
 		//setAmmoText ();
 		JSONObject json = new JSONObject ();
@@ -156,11 +152,10 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
-        /*
+
         Laser laser = collisionInfo.gameObject.GetComponent<Laser>();
+        Debug.Log("laser id: " + laser.shooterId);
 		GetHit (laser.shooterId);
-		GetHit (((Laser)collisionInfo.gameObject).shooterId);
-        */
     }
 
 	void GetHit(string shooterId) {
