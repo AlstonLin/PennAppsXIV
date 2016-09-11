@@ -40,7 +40,7 @@ public class NetworkController : MonoBehaviour {
 			}
 		});
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").str;
+			string id = e.data.GetField("player_id").str;
 			int hp = Int32.Parse(e.data.GetField("hp").str);
 			players[id].hp = hp;
 		});
