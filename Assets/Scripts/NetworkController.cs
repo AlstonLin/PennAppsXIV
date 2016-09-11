@@ -61,20 +61,19 @@ public class NetworkController : MonoBehaviour {
             Debug.Log("player_health_update");
 			string id = e.data.GetField("player_id").str;
             int hp = Mathf.RoundToInt(e.data.GetField("hp").f);
-            Debug.Log("HP parsed: " + hp);
             if (players.ContainsKey(id)) {
     			players[id].hp = hp;
             }
 		});
 
 		mySocket.On ("shot_fired", (SocketIOEvent e) => {
-
 			string id = e.data.GetField("player_id").str;
 			Debug.Log("SHOT FIRED BY ID: " + id);
 			if (players.ContainsKey(id)) {
 				players[id].Fire(id);
 			}
 		});
+
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			String shooterID = e.data.GetField("shooter_id").str;

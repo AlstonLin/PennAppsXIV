@@ -72,7 +72,6 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
     }
 
     #region IGvrGazeResponder implementation
-
         /// Called when the user is looking on a GameObject with this script,
         /// as long as it is set to an appropriate layer (see GvrGaze).
     public void OnGazeEnter() {
