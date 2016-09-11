@@ -77,7 +77,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     public void Fire() {
-        GetHit("test");
         /*
 		if (ammoAmount <= 0){
 			return;
@@ -147,22 +146,27 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 	private void moveForward (){
 		Vector3 forward = transform.forward;
 		controller.Move (forward * MOVE_SPEED * Time.deltaTime);
-		JSONObject json = new JSONObject ();
-		json.AddField ("player_id", NetworkController.playerID);
-		json.AddField ("location_x", transform.position.x);
-		json.AddField ("location_y", transform.position.y);
-		json.AddField ("location_z", transform.position.z);
 
-		json.AddField ("rotation_x", transform.rotation.eulerAngles.x);
-		json.AddField ("rotation_y", transform.rotation.eulerAngles.y);
-		json.AddField ("rotation_z", transform.rotation.eulerAngles.z);
-		socket.Emit ("location_update", json);
+        if (!isDead) {
+            JSONObject json = new JSONObject();
+
+            json.AddField("player_id", NetworkController.playerID);
+            json.AddField("location_x", transform.position.x);
+            json.AddField("location_y", transform.position.y);
+            json.AddField("location_z", transform.position.z);
+
+            json.AddField("rotation_x", transform.rotation.eulerAngles.x);
+            json.AddField("rotation_y", transform.rotation.eulerAngles.y);
+            json.AddField("rotation_z", transform.rotation.eulerAngles.z);
+            socket.Emit("location_update", json);
+        }
 	}
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
 
         Laser laser = collisionInfo.gameObject.GetComponent<Laser>();
+        //returning nothing, not working
         Debug.Log("laser id: " + laser.shooterId);
 		GetHit (laser.shooterId);
     }

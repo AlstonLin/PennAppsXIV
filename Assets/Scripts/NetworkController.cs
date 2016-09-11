@@ -45,6 +45,7 @@ public class NetworkController : MonoBehaviour {
 			}
 		});	
 		mySocket.On ("location_update", (SocketIOEvent e) => {
+            Debug.Log("Location_update called");
 			string id = e.data.GetField("player_id").str;
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
@@ -58,7 +59,6 @@ public class NetworkController : MonoBehaviour {
 		});
 
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
-            Debug.Log("player_health_update");
 			string id = e.data.GetField("player_id").str;
             int hp = Mathf.RoundToInt(e.data.GetField("hp").f);
             if (players.ContainsKey(id)) {
@@ -76,8 +76,8 @@ public class NetworkController : MonoBehaviour {
 
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
-			String shooterID = e.data.GetField("shooter_id").str;
-			players[id].onDeath();
+			string shooterID = e.data.GetField("shooter_id").str;
+            Destroy(players[id].spaceShip);
             players.Remove(id);
             if(players.Count == 0) {
                 //won't work if you stay alive as a bystander for the whole time
@@ -88,6 +88,7 @@ public class NetworkController : MonoBehaviour {
                 clientSpaceShip.kills++;
             }
 		});
+
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			if (!id.Equals(playerID)) {
