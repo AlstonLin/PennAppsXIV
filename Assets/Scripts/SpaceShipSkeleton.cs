@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
