@@ -16,7 +16,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 	private SocketIOComponent socket;
     private Vector3 startingPosition;
 
-	private string id = "";
 	public int hp;
 	public float fireInterval;
 	private float ammoAmount = STARTING_AMMO;
@@ -84,7 +83,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		//setAmmoText ();
 		JSONObject json = new JSONObject ();
 
-		json.AddField ("player_id", id);
+		json.AddField ("player_id", NetworkController.playerID);
 		socket.Emit ("shot_fired", json);
     }
 
@@ -133,7 +132,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		Vector3 forward = transform.forward;
 		controller.Move (forward * MOVE_SPEED * Time.deltaTime);
 		JSONObject json = new JSONObject ();
-		json.AddField ("player_id", id);
+		json.AddField ("player_id", NetworkController.playerID);
 		json.AddField ("location_x", transform.position.x);
 		json.AddField ("location_y", transform.position.y);
 		json.AddField ("location_z", transform.position.z);
@@ -152,7 +151,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         hp--;
         Destroy(healthBars[hp]);
 		JSONObject json = new JSONObject ();
-		json.AddField ("player_id", id);
+		json.AddField ("player_id", NetworkController.playerID);
 		json.AddField ("hp", hp);
 		socket.Emit ("player_health_update", json);
         if(hp < 1) {
@@ -163,7 +162,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public void onDeath() {
         Destroy(spaceShip);
 		JSONObject json = new JSONObject ();
-		json.AddField ("player_id", id);
+		json.AddField ("player_id", NetworkController.playerID);
 		socket.Emit ("player_death", json);
     }
 

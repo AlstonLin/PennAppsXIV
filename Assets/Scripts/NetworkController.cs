@@ -29,7 +29,9 @@ public class NetworkController : MonoBehaviour {
 			players[id].transform.rotation = rotation;
 		});
 		mySocket.On ("location_update", (SocketIOEvent e) => {
+			Debug.Log("Event data" + e.data.ToString());
 			string id = e.data.GetField("player_id").str;
+			Debug.Log("ID: " + id);
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
 				Quaternion rotation = getRotationField(e.data);
