@@ -83,6 +83,7 @@ public class NetworkController : MonoBehaviour {
             if(players.Count == 0) {
                 //won't work if you stay alive as a bystander for the whole time
                 Debug.Log("no more players, you win?");
+				clientSpaceShip.youWinText.SetActive(true);
             }
 
             /*

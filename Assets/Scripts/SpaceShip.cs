@@ -7,12 +7,12 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public float MOVE_SPEED;
 	private const int STARTING_AMMO = 30;
 
-    public GameObject spaceShip, socketObj, gameOverText;
+    public GameObject spaceShip, socketObj, gameOverText, youWinText;
     public Laser laser;
     public GameObject[] healthBars;
 	public CharacterController controller;
 
-    public TextMesh enemyHp;
+    public TextMesh enemyHp, noOfKills;
 
 	private SocketIOComponent socket;
     private Vector3 startingPosition;
@@ -32,6 +32,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         SetGazedAt(false);
 		//setAmmoText ();
 		gameOverText.SetActive (false);
+		youWinText.SetActive (false);
     }
 
     void LateUpdate() {
@@ -108,6 +109,8 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         } else {
             enemyHp.text = "";
         }
+
+		noOfKills.text = "Kills: " + kills; 
 
         moveForward ();
 		//Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
