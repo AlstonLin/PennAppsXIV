@@ -138,10 +138,12 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		json.AddField ("location_x", transform.position.x);
 		json.AddField ("location_y", transform.position.y);
 		json.AddField ("location_z", transform.position.z);
-		json.AddField ("rotation_x", transform.rotation.x);
-		json.AddField ("rotation_y", transform.rotation.y);
-		json.AddField ("rotation_z", transform.rotation.z);
+
+		json.AddField ("rotation_x", transform.rotation.eulerAngles.x);
+		json.AddField ("rotation_y", transform.rotation.eulerAngles.y);
+		json.AddField ("rotation_z", transform.rotation.eulerAngles.z);
 		socket.Emit ("location_update", json);
+        Debug.Log(json);
 	}
 
     void OnCollisionEnter(Collision collisionInfo) {
@@ -154,7 +156,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         Destroy(healthBars[hp]);
 		JSONObject json = new JSONObject ();
 		json.AddField ("player_id", NetworkController.playerID);
-		json.AddField ("hp", hp);
+		json.AddField ("hp", (float)hp);
 		socket.Emit ("player_health_update", json);
         if(hp < 1) {
             onDeath();

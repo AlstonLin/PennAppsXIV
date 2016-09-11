@@ -39,11 +39,17 @@ public class NetworkController : MonoBehaviour {
 				spawnPlayer(id, e);
 			}
 		});
+
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
+            Debug.Log("player_health_update");
 			string id = e.data.GetField("player_id").str;
-			int hp = Int32.Parse(e.data.GetField("hp").str);
-			players[id].hp = hp;
+            int hp = Mathf.RoundToInt(e.data.GetField("hp").f);
+            Debug.Log("HP parsed: " + hp);
+            if (players.ContainsKey(id)) {
+    			players[id].hp = hp;
+            }
 		});
+
 		mySocket.On ("shot_fired", (SocketIOEvent e) => {
 
 			string id = e.data.GetField("player_id").str;
@@ -114,6 +120,6 @@ public class NetworkController : MonoBehaviour {
 		float rotationX = getFloatField("rotation_x", data);
 		float rotationY = getFloatField("rotation_y", data);
 		float rotationZ = getFloatField("rotation_z", data);
-		return new Quaternion(rotationX, rotationY, rotationZ, 0);
+        return Quaternion.Euler(rotationX, rotationY, rotationZ);
 	}
 }

@@ -65,10 +65,6 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
     }
 
-    void OnCollisionEnter(Collision collisionInfo) {
-        Debug.Log("spaceship: onCollisionEnter");
-    }
-
     public void onDeath() {
         Destroy(spaceShip);
     }
