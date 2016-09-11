@@ -105,7 +105,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
             SpaceShipSkeleton ship = hit.transform.gameObject.GetComponent<SpaceShipSkeleton>();
             if (ship != null) {
                 enemyHp.text = ship.hp.ToString();
-            }
+            } 
         } else {
             enemyHp.text = "";
         }

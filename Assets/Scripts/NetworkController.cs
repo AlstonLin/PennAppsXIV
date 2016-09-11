@@ -85,11 +85,12 @@ public class NetworkController : MonoBehaviour {
                 Debug.Log("no more players, you win?");
 				clientSpaceShip.youWinText.SetActive(true);
             }
+				
+            Debug.Log("Shooter id: " + shooterID);
+            if(playerID.Equals(shooterID)) {
+                clientSpaceShip.kills++;
+            }
 
-			if (shooterID.Equals(playerID)){
-				clientSpaceShip.kills++;
-			}
-            
 		});
 
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
