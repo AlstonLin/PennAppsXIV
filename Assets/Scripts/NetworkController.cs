@@ -19,7 +19,7 @@ public class NetworkController : MonoBehaviour {
 	}
 	void initializeSocketEvents () {
 		mySocket.On ("player_initialize", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+			string id = e.data.GetField("player_id").str;
 			playerID = id;
 
 			Vector3 location = getLocationField(e.data);
@@ -29,7 +29,7 @@ public class NetworkController : MonoBehaviour {
 			players[id].transform.rotation = rotation;
 		});
 		mySocket.On ("location_update", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+			string id = e.data.GetField("player_id").ToString();
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
 				Quaternion rotation = getRotationField(e.data);
@@ -45,26 +45,26 @@ public class NetworkController : MonoBehaviour {
 			players[id].hp = hp;
 		});
 		mySocket.On ("shot_fired", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+			string id = e.data.GetField("player_id").ToString();
 			if (players.ContainsKey(id)) {
 				players[id].Fire();
 			}
 		});
 		mySocket.On ("player_death", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+			string id = e.data.GetField("player_id").ToString();
 			players[id].onDeath();
 
 		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+			string id = e.data.GetField("player_id").ToString();
 			if (!id.Equals(playerID)) {
 				return;
 			}
 		});
-		mySocket.On ("player_disconnect", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
+		mySocket.On ("player_leave", (SocketIOEvent e) => {
+			string id = e.data.GetField("player_id").ToString();
 			if (players.ContainsKey(id)){
-				Destroy(players[id]);
+				Destroy(players[id].spaceShip);
 				players.Remove(id);
 			}
 		});
