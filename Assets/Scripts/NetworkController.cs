@@ -65,7 +65,11 @@ public class NetworkController : MonoBehaviour {
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			players[id].onDeath();
-
+            players.Remove(id);
+            if(players.Count == 0) {
+                //won't work if you stay alive as a bystander for the whole time
+                Debug.Log("no more players, you win?");
+            }
 		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
