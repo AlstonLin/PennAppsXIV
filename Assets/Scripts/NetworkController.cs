@@ -7,7 +7,7 @@ using System;
 public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
 	public SpaceShipSkeleton playerPrefab;
-	public GameObject asteroidPrefab;
+	public GameObject[] asteroidPrefabs;
 	public GameObject ammoBoxPrefab;
 
     public GameObject clientPrefab;
@@ -33,7 +33,13 @@ public class NetworkController : MonoBehaviour {
             clientPrefab.transform.rotation = rotation;
 		});
 		mySocket.On ("set_asteroids", (SocketIOEvent e) => {
-			Debug.Log("RECEIVED ASTEROIDS: " + e.data.ToString());
+			List<JSONObject> asteroidLocations = e.data.GetField("data").list;
+			foreach (JSONObject asteroidLocation in asteroidLocations){
+				GameObject asteroidPrefab = asteroidPrefabs[getIntField("type", asteroidLocation)];
+				Vector3 location = new Vector3(getFloatField("location_x", asteroidLocation),
+					getFloatField("location_y", asteroidLocation), getFloatField("location_z", asteroidLocation));
+				Instantiate(asteroidPrefab, location, Quaternion.identity);
+			}
 		});	
 		mySocket.On ("location_update", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
@@ -115,6 +121,10 @@ public class NetworkController : MonoBehaviour {
 
 	private float getFloatField(string key, JSONObject data) {
 		return float.Parse (data.GetField (key).ToString());
+	}
+
+	private int getIntField(string key, JSONObject data) {
+		return int.Parse (data.GetField (key).ToString());
 	}
 
 	private Vector3 getLocationField(JSONObject data) {
