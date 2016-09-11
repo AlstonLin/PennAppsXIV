@@ -7,7 +7,10 @@ using System;
 public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
 	public SpaceShipSkeleton playerPrefab;
+	public GameObject asteroidPrefab;
 	public GameObject ammoBoxPrefab;
+
+    public GameObject clientPrefab;
 
 	private Dictionary<string, SpaceShipSkeleton> players = new Dictionary<string, SpaceShipSkeleton>();
 	public static string playerID = "";
@@ -19,6 +22,7 @@ public class NetworkController : MonoBehaviour {
 	}
 	void initializeSocketEvents () {
 		mySocket.On ("player_initialize", (SocketIOEvent e) => {
+            Debug.Log("initializeSocketEvents called");
 			string id = e.data.GetField("player_id").str;
 			playerID = id;
 
@@ -30,11 +34,15 @@ public class NetworkController : MonoBehaviour {
 			myShip.transform.rotation = rotation;
 
 		});
+		mySocket.On ("set_asteroids", (SocketIOEvent e) => {
+			Debug.Log("RECEIVED ASTEROIDS: " + e.data.ToString());
+		});	
 		mySocket.On ("location_update", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
 				Quaternion rotation = getRotationField(e.data);
+
 				players[id].transform.position = location;
 				players[id].transform.rotation = rotation;
 			} else {
