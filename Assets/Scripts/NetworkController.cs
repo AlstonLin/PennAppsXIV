@@ -10,6 +10,7 @@ public class NetworkController : MonoBehaviour {
 	public GameObject[] asteroidPrefabs;
 	public GameObject ammoBoxPrefab;
 
+    public SpaceShip clientSpaceShip;
     public GameObject clientPrefab;
 
 	private Dictionary<string, SpaceShipSkeleton> players = new Dictionary<string, SpaceShipSkeleton>();
@@ -29,9 +30,8 @@ public class NetworkController : MonoBehaviour {
 			Vector3 location = getLocationField(e.data);
 			Quaternion rotation = getRotationField(e.data);
 
-			SpaceShip myShip = GetComponent<SpaceShip>();
-			myShip.transform.position = location;
-			myShip.transform.rotation = rotation;
+			clientPrefab.transform.position = location;
+			clientPrefab.transform.rotation = rotation;
 
 		});
 		mySocket.On ("set_asteroids", (SocketIOEvent e) => {
