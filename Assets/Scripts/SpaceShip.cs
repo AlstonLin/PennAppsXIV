@@ -26,8 +26,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
 	public int kills = 0;
 
-	public int kills = 0;
-
     void Start() {
 		socket = socketObj.GetComponent (typeof(SocketIOComponent)) as SocketIOComponent;
         startingPosition = transform.localPosition;
