@@ -29,9 +29,7 @@ public class NetworkController : MonoBehaviour {
 			players[id].transform.rotation = rotation;
 		});
 		mySocket.On ("location_update", (SocketIOEvent e) => {
-			Debug.Log("Event data" + e.data.ToString());
 			string id = e.data.GetField("player_id").str;
-			Debug.Log("ID: " + id);
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
 				Quaternion rotation = getRotationField(e.data);
@@ -102,7 +100,7 @@ public class NetworkController : MonoBehaviour {
 	}
 
 	private float getFloatField(string key, JSONObject data) {
-		return float.Parse (data.GetField (key).str);
+		return float.Parse (data.GetField (key).ToString());
 	}
 
 	private Vector3 getLocationField(JSONObject data) {
