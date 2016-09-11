@@ -152,7 +152,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         hp--;
         Destroy(healthBars[hp]);
 		JSONObject json = new JSONObject ();
-		json.AddField ("id", id);
+		json.AddField ("player_id", id);
 		json.AddField ("hp", hp);
 		socket.Emit ("player_health_update", json);
         if(hp < 1) {
@@ -163,7 +163,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public void onDeath() {
         Destroy(spaceShip);
 		JSONObject json = new JSONObject ();
-		json.AddField ("id", id);
+		json.AddField ("player_id", id);
 		socket.Emit ("player_death", json);
     }
 
