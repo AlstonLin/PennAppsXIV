@@ -7,6 +7,7 @@ using System;
 public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
 	public SpaceShipSkeleton playerPrefab;
+	public GameObject asteroidPrefab;
 	public GameObject ammoBoxPrefab;
 
 	private Dictionary<string, SpaceShipSkeleton> players = new Dictionary<string, SpaceShipSkeleton>();
@@ -28,6 +29,9 @@ public class NetworkController : MonoBehaviour {
 			players[id].transform.position = location;
 			players[id].transform.rotation = rotation;
 		});
+		mySocket.On ("set_asteroids", (SocketIOEvent e) => {
+			Debug.Log("RECEIVED ASTEROIDS: " + e.data.ToString());
+		});	
 		mySocket.On ("location_update", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			if (players.ContainsKey(id)){
