@@ -62,8 +62,15 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 
 	public void Fire(string shooterId) {
 		Debug.Log ("skeleton ship fire called");
+        /*
+<<<<<<< HEAD
         Laser newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as Laser;
 		newLaser.shooterId = shooterId;
+=======
+        GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
+		((Laser)newLaser).shooterId = shooterId;
+>>>>>>> c4874ed5d5c8352927ac0b11156b198dd8320fd1
+*/
 	}
 
     public void onDeath() {
