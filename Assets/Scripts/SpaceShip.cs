@@ -83,6 +83,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		ammoAmount--;
 		//setAmmoText ();
 		JSONObject json = new JSONObject ();
+
 		json.AddField ("id", id);
 		socket.Emit ("shot_fired", json);
     }
