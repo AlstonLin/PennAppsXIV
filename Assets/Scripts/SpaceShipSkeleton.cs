@@ -62,7 +62,6 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 
 	public void Fire(string shooterId) {
 		Debug.Log ("skeleton ship fire called");
-
         Laser newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as Laser;
 		newLaser.shooterId = shooterId;
 	}
@@ -72,6 +71,7 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
     }
 
     #region IGvrGazeResponder implementation
+
         /// Called when the user is looking on a GameObject with this script,
         /// as long as it is set to an appropriate layer (see GvrGaze).
     public void OnGazeEnter() {
