@@ -67,7 +67,6 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
-		hp--;
     }
 
     public void onDeath() {
