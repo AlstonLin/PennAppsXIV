@@ -4,7 +4,7 @@ using SocketIO;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
-	private const float MOVE_SPEED = 1.0f;
+    public float MOVE_SPEED;
 	private const int STARTING_AMMO = 30;
 
     public GameObject laser, spaceShip, socketObj;
@@ -88,7 +88,13 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     void Update() {
-		moveForward ();
+
+        Vector3 fwd = transform.TransformDirection(Vector3.forward);
+        if (Physics.Raycast(transform.position, fwd, 250)) {
+            print("There is something in front of the object!");
+        }
+
+        moveForward ();
 		//Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
 
 		if (fireTimeRemaining > 0) {
