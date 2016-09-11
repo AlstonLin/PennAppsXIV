@@ -82,7 +82,9 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 	}
 
     public void onDeath() {
+        Debug.Log("onDeath start");
         Destroy(spaceShip);
+        Debug.Log("onDeath end");
     }
 
     #region IGvrGazeResponder implementation
