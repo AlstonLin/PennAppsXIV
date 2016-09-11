@@ -25,8 +25,10 @@ public class NetworkController : MonoBehaviour {
 			Vector3 location = getLocationField(e.data);
 			Quaternion rotation = getRotationField(e.data);
 
-			players[id].transform.position = location;
-			players[id].transform.rotation = rotation;
+			SpaceShip myShip = GetComponent<SpaceShip>();
+			myShip.transform.position = location;
+			myShip.transform.rotation = rotation;
+
 		});
 		mySocket.On ("location_update", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
@@ -55,13 +57,16 @@ public class NetworkController : MonoBehaviour {
 			string id = e.data.GetField("player_id").str;
 			Debug.Log("SHOT FIRED BY ID: " + id);
 			if (players.ContainsKey(id)) {
-				players[id].Fire();
+				players[id].Fire(id);
 			}
 		});
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
+			String shooterID = e.data.GetFeild("shooter_id").str;
 			players[id].onDeath();
 
+			SpaceShip myShip = GetComponent<SpaceShip>();
+			myShip.kills++;
 		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;

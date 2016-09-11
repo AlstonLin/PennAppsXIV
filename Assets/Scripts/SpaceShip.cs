@@ -81,6 +81,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         */
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
+		((Laser)newLaser).shooterId  = NetworkController.playerID;
 		ammoAmount--;
 		//setAmmoText ();
 		JSONObject json = new JSONObject ();
@@ -148,10 +149,10 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
-        GetHit();
+		GetHit (((Laser)collisionInfo.gameObject).shooterId);
     }
 
-    void GetHit() {
+	void GetHit(string shooterId) {
         hp--;
         Destroy(healthBars[hp]);
 		JSONObject json = new JSONObject ();
@@ -159,14 +160,15 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		json.AddField ("hp", (float)hp);
 		socket.Emit ("player_health_update", json);
         if(hp < 1) {
-            onDeath();
+			onDeath(shooterId);
         }
     }
 
-    public void onDeath() {
+	public void onDeath(string shooterId) {
         Destroy(spaceShip);
 		JSONObject json = new JSONObject ();
 		json.AddField ("player_id", NetworkController.playerID);
+		json.AddField ("shooter_id", shooterId);
 		socket.Emit ("player_death", json);
     }
 
