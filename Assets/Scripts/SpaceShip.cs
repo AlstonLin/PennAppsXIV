@@ -4,13 +4,14 @@ using SocketIO;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
-	private const float MOVE_SPEED = 1.0f;
+    public float MOVE_SPEED;
 	private const int STARTING_AMMO = 30;
 
     public GameObject laser, spaceShip, socketObj;
-    //public Text ammoText;
     public GameObject[] healthBars;
 	public CharacterController controller;
+
+    public TextMesh enemyHp;
 
 	private SocketIOComponent socket;
     private Vector3 startingPosition;
@@ -87,7 +88,19 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     void Update() {
-		moveForward ();
+
+        Vector3 fwd = transform.TransformDirection(Vector3.forward);
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, fwd, out hit, 400)) {
+            SpaceShipSkeleton ship = hit.transform.gameObject.GetComponent<SpaceShipSkeleton>();
+            if (ship != null) {
+                enemyHp.text = ship.hp.ToString();
+            }
+        } else {
+            enemyHp.text = "";
+        }
+
+        moveForward ();
 		//Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
 
 		if (fireTimeRemaining > 0) {
@@ -137,6 +150,10 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     void GetHit() {
         hp--;
         Destroy(healthBars[hp]);
+		JSONObject json = new JSONObject ();
+		json.AddField ("id", id);
+		json.AddField ("hp", hp);
+		socket.Emit ("player_health_update", json);
         if(hp < 1) {
             onDeath();
         }

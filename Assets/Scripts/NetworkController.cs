@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using SocketIO;
+using System;
 
 public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
@@ -39,7 +40,9 @@ public class NetworkController : MonoBehaviour {
 			}
 		});
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
-		
+			string id = e.data.GetField("id").ToString();
+			int hp = Int32.Parse(e.data.GetField("hp").ToString());
+			players[id].hp = hp;
 		});
 		mySocket.On ("shot_fired", (SocketIOEvent e) => {
 			Debug.Log("shot_fireddasdas");

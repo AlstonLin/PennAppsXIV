@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
@@ -10,7 +11,7 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 
     private Vector3 startingPosition;
 
-	private float id = -1;
+	private string id = "";
 
     void Start() {
         startingPosition = transform.localPosition;
@@ -66,14 +67,7 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
-        GetHit();
-    }
-
-    public void GetHit() {
-        hp--;
-        if(hp < 1) {
-            onDeath();
-        }
+		hp--;
     }
 
     public void onDeath() {
