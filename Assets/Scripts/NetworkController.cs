@@ -11,7 +11,6 @@ public class NetworkController : MonoBehaviour {
 	public GameObject ammoBoxPrefab;
 
     public GameObject clientPrefab;
-    public SpaceShip clientSpaceShip;
 
 	private Dictionary<string, SpaceShipSkeleton> players = new Dictionary<string, SpaceShipSkeleton>();
 	public static string playerID = "";
@@ -36,6 +35,7 @@ public class NetworkController : MonoBehaviour {
 
 		});
 		mySocket.On ("set_asteroids", (SocketIOEvent e) => {
+			Debug.Log("ASTEROIDS! " + e.data.ToString());
 			List<JSONObject> asteroidLocations = e.data.GetField("data").list;
 			foreach (JSONObject asteroidLocation in asteroidLocations){
 				GameObject asteroidPrefab = asteroidPrefabs[getIntField("type", asteroidLocation)];
@@ -61,19 +61,20 @@ public class NetworkController : MonoBehaviour {
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
             int hp = Mathf.RoundToInt(e.data.GetField("hp").f);
+            Debug.Log("HP parsed: " + hp);
             if (players.ContainsKey(id)) {
     			players[id].hp = hp;
             }
 		});
 
 		mySocket.On ("shot_fired", (SocketIOEvent e) => {
+
 			string id = e.data.GetField("player_id").str;
 			Debug.Log("SHOT FIRED BY ID: " + id);
 			if (players.ContainsKey(id)) {
 				players[id].Fire(id);
 			}
 		});
-
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			string shooterID = e.data.GetField("shooter_id").str;
@@ -85,9 +86,10 @@ public class NetworkController : MonoBehaviour {
 				clientSpaceShip.youWinText.SetActive(true);
             }
 
-            if(playerID.Equals(shooterID)) {
-                clientSpaceShip.kills++;
-            }
+            /*
+			SpaceShip myShip = GetComponent<SpaceShip>();
+			myShip.kills++;
+            */
 		});
 
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
@@ -102,6 +104,7 @@ public class NetworkController : MonoBehaviour {
 			if (players.ContainsKey(id)){
 				Debug.Log("Player Destroyed!");
 				Destroy(players[id].spaceShip);
+				players[id].disposeArrow();
 				players.Remove(id);
 			}
 		});

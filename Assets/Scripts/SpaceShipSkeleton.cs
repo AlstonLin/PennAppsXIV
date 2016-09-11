@@ -5,18 +5,33 @@ using UnityEngine;
 public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 	private const float MOVE_SPEED = 1.0f;
 
-	public GameObject laser, spaceShip;
+	public GameObject laser, spaceShip, arrowPrefab;
 
 	public int hp;
 
+	private GameObject hud, arrow;
     private Vector3 startingPosition;
 
 	private string id = "";
 
     void Start() {
+		hud = GameObject.Find ("/Main Camera/HUD");
+		arrow = Instantiate (arrowPrefab, hud.transform.position, Quaternion.identity) as GameObject;
+		arrow.transform.parent = hud.transform;
         startingPosition = transform.localPosition;
         SetGazedAt(false);
     }
+
+	void Update(){
+		arrow.transform.localPosition = new Vector3 (0, 15, 20);
+		// Calculates direction for the arrow
+		GameObject player = GameObject.Find("/Main Camera/Space Ship (Friendly)");
+		Vector3 playerPos = player.transform.position;
+		Vector3 dirToEnemy = playerPos - transform.position;
+		float size = (float) (1 / Math.Log(dirToEnemy.magnitude));
+		arrow.transform.localScale = new Vector3 (size, size, size);
+		arrow.transform.LookAt (transform.position);
+	}
 
     void LateUpdate() {
         GvrViewer.Instance.UpdateState();
@@ -85,6 +100,11 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
     public void OnGazeExit() {
         SetGazedAt(false);
     }
+
+
+	public void disposeArrow() {
+		Destroy (arrow);
+	}
 
     /// Called when the viewer's trigger is used, between OnGazeEnter and OnGazeExit.
     public void OnGazeTrigger() {    }
