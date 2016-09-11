@@ -77,6 +77,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
     public void Fire() {
+        GetHit("test");
         /*
 		if (ammoAmount <= 0){
 			return;
@@ -179,7 +180,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
 	public void onDeath(string shooterId) {
-        Destroy(spaceShip, 5);
+        Destroy(spaceShip, 3);
 		JSONObject json = new JSONObject ();
 		json.AddField ("player_id", NetworkController.playerID);
 		json.AddField ("shooter_id", shooterId);
