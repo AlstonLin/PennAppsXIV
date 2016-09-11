@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using SocketIO;
 using System;
+using UnityEngine.SceneManagement;
 
 public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
@@ -84,6 +85,7 @@ public class NetworkController : MonoBehaviour {
                 //won't work if you stay alive as a bystander for the whole time
                 Debug.Log("no more players, you win?");
 				clientSpaceShip.youWinText.SetActive(true);
+				mySocket.Emit("game_won");
             }
 				
             Debug.Log("Shooter id: " + shooterID);
@@ -91,6 +93,10 @@ public class NetworkController : MonoBehaviour {
                 clientSpaceShip.kills++;
             }
 
+		});
+
+		mySocket.On ("game_won", (SocketIOEvent e) => {
+			SceneManager.LoadScene(0);
 		});
 
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
