@@ -7,7 +7,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public float MOVE_SPEED;
 	private const int STARTING_AMMO = 30;
 
-    public GameObject spaceShip, socketObj;
+    public GameObject spaceShip, socketObj, gameOverText;
     public Laser laser;
     public GameObject[] healthBars;
 	public CharacterController controller;
@@ -22,6 +22,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 	private float ammoAmount = STARTING_AMMO;
     private float fireTimeRemaining = 0;
     private bool pressed = false;
+	private bool isDead = false;
 
 	public int kills = 0;
 
@@ -30,6 +31,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         startingPosition = transform.localPosition;
         SetGazedAt(false);
 		//setAmmoText ();
+		gameOverText.SetActive (false);
     }
 
     void LateUpdate() {
@@ -110,6 +112,12 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         moveForward ();
 		//Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
 
+		if (isDead) {
+			MOVE_SPEED *= 0.97F;
+			gameOverText.transform.parent = null;
+			return;
+		}
+
 		if (fireTimeRemaining > 0) {
 			fireTimeRemaining -= Time.deltaTime;
 		}
@@ -171,11 +179,14 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     }
 
 	public void onDeath(string shooterId) {
-        Destroy(spaceShip);
+        Destroy(spaceShip, 5);
 		JSONObject json = new JSONObject ();
 		json.AddField ("player_id", NetworkController.playerID);
 		json.AddField ("shooter_id", shooterId);
 		socket.Emit ("player_death", json);
+
+		gameOverText.SetActive (true);
+		isDead = true;
     }
 
     #region IGvrGazeResponder implementation
