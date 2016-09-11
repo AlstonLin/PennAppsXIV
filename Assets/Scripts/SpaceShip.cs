@@ -92,7 +92,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, fwd, out hit, 300)) {
+        if (Physics.Raycast(transform.position, fwd, out hit, 400)) {
             SpaceShipSkeleton ship = hit.transform.gameObject.GetComponent<SpaceShipSkeleton>();
             if (ship != null) {
                 enemyHp.text = ship.hp.ToString();
