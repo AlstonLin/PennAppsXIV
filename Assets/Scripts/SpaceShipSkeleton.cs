@@ -60,6 +60,7 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
     }
 
     public void Fire() {
+		Debug.Log ("skeleton ship fire called");
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
     }
 

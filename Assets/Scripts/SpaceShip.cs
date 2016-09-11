@@ -79,12 +79,11 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         */
         fireTimeRemaining = fireInterval;
         GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
-		socket.Emit ("shot_fired", new JSONObject());
 		ammoAmount--;
 		//setAmmoText ();
 		JSONObject json = new JSONObject ();
 		json.AddField ("id", id);
-		socket.Emit ("shot_fired");
+		socket.Emit ("shot_fired", json);
     }
 
     void Update() {
@@ -120,7 +119,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		Vector3 forward = transform.forward;
 		controller.Move (forward * MOVE_SPEED * Time.deltaTime);
 		JSONObject json = new JSONObject ();
-		json.AddField ("player_id", NetworkController.playerID);
+		json.AddField ("id", id);
 		json.AddField ("location_x", transform.position.x);
 		json.AddField ("location_y", transform.position.y);
 		json.AddField ("location_z", transform.position.z);

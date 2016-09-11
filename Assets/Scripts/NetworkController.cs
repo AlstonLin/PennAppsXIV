@@ -42,6 +42,7 @@ public class NetworkController : MonoBehaviour {
 		
 		});
 		mySocket.On ("shot_fired", (SocketIOEvent e) => {
+			Debug.Log("shot_fireddasdas");
 			string id = e.data.GetField("player_id").ToString();
 			if (players.ContainsKey(id)) {
 				players[id].Fire();
