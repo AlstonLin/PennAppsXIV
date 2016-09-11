@@ -136,10 +136,12 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		json.AddField ("location_x", transform.position.x);
 		json.AddField ("location_y", transform.position.y);
 		json.AddField ("location_z", transform.position.z);
-		json.AddField ("rotation_x", transform.rotation.x);
-		json.AddField ("rotation_y", transform.rotation.y);
-		json.AddField ("rotation_z", transform.rotation.z);
+
+		json.AddField ("rotation_x", transform.rotation.eulerAngles.x);
+		json.AddField ("rotation_y", transform.rotation.eulerAngles.y);
+		json.AddField ("rotation_z", transform.rotation.eulerAngles.z);
 		socket.Emit ("location_update", json);
+        Debug.Log(json);
 	}
 
     void OnCollisionEnter(Collision collisionInfo) {
