@@ -23,7 +23,7 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
     }
 
 	void Update(){
-		arrow.transform.localPosition = new Vector3 (0, 15, 20);
+		arrow.transform.localPosition = new Vector3 (0, 15, 18);
 		// Calculates direction for the arrow
 		GameObject player = GameObject.Find("/Main Camera/Space Ship (Friendly)");
 		Vector3 playerPos = player.transform.position;

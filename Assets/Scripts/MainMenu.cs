@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class MainMenu : MonoBehaviour {
+public class MainMenu : MonoBehaviour, IGvrGazeResponder {
 
 	// Use this for initialization
 	void Start () {
@@ -18,4 +18,21 @@ public class MainMenu : MonoBehaviour {
         Debug.Log("start game");
         SceneManager.LoadScene(1);
     }
+
+	#region IGvrGazeResponder implementation
+
+
+	public void OnGazeEnter() {
+	}
+
+
+	public void OnGazeExit() {
+	}
+
+	public void OnGazeTrigger() {
+		StartGame ();
+	}
+
+	#endregion
+
 }
