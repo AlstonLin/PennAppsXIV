@@ -7,7 +7,11 @@ using System;
 public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
 	public SpaceShipSkeleton playerPrefab;
+	public GameObject[] asteroidPrefabs;
 	public GameObject ammoBoxPrefab;
+
+    public GameObject clientPrefab;
+    public SpaceShip clientSpaceShip;
 
 	private Dictionary<string, SpaceShipSkeleton> players = new Dictionary<string, SpaceShipSkeleton>();
 	public static string playerID = "";
@@ -19,20 +23,33 @@ public class NetworkController : MonoBehaviour {
 	}
 	void initializeSocketEvents () {
 		mySocket.On ("player_initialize", (SocketIOEvent e) => {
+            Debug.Log("initializeSocketEvents called");
 			string id = e.data.GetField("player_id").str;
 			playerID = id;
 
 			Vector3 location = getLocationField(e.data);
 			Quaternion rotation = getRotationField(e.data);
 
-			players[id].transform.position = location;
-			players[id].transform.rotation = rotation;
+			SpaceShip myShip = GetComponent<SpaceShip>();
+			myShip.transform.position = location;
+			myShip.transform.rotation = rotation;
+
 		});
+		mySocket.On ("set_asteroids", (SocketIOEvent e) => {
+			List<JSONObject> asteroidLocations = e.data.GetField("data").list;
+			foreach (JSONObject asteroidLocation in asteroidLocations){
+				GameObject asteroidPrefab = asteroidPrefabs[getIntField("type", asteroidLocation)];
+				Vector3 location = new Vector3(getFloatField("location_x", asteroidLocation),
+					getFloatField("location_y", asteroidLocation), getFloatField("location_z", asteroidLocation));
+				Instantiate(asteroidPrefab, location, Quaternion.identity);
+			}
+		});	
 		mySocket.On ("location_update", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
 				Quaternion rotation = getRotationField(e.data);
+
 				players[id].transform.position = location;
 				players[id].transform.rotation = rotation;
 			} else {
@@ -55,13 +72,22 @@ public class NetworkController : MonoBehaviour {
 			string id = e.data.GetField("player_id").str;
 			Debug.Log("SHOT FIRED BY ID: " + id);
 			if (players.ContainsKey(id)) {
-				players[id].Fire();
+				players[id].Fire(id);
 			}
 		});
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
+			String shooterID = e.data.GetField("shooter_id").str;
 			players[id].onDeath();
+            players.Remove(id);
+            if(players.Count == 0) {
+                //won't work if you stay alive as a bystander for the whole time
+                Debug.Log("no more players, you win?");
+            }
 
+            if(playerID.Equals(shooterID)) {
+                clientSpaceShip.kills++;
+            }
 		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
@@ -107,6 +133,10 @@ public class NetworkController : MonoBehaviour {
 
 	private float getFloatField(string key, JSONObject data) {
 		return float.Parse (data.GetField (key).ToString());
+	}
+
+	private int getIntField(string key, JSONObject data) {
+		return int.Parse (data.GetField (key).ToString());
 	}
 
 	private Vector3 getLocationField(JSONObject data) {
