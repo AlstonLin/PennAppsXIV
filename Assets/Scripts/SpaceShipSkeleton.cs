@@ -1,21 +1,18 @@
 ﻿using UnityEngine;
-using SocketIO;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
 	private const float MOVE_SPEED = 1.0f;
 
-	public GameObject laser, spaceShip, socketObj;
+	public GameObject laser, spaceShip;
 
 	public int hp;
 
-	private SocketIOComponent socket;
     private Vector3 startingPosition;
 
 	private float id = -1;
 
     void Start() {
-		socket = socketObj.GetComponent (typeof(SocketIOComponent)) as SocketIOComponent;
         startingPosition = transform.localPosition;
         SetGazedAt(false);
     }
