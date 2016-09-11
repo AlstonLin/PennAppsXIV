@@ -191,7 +191,6 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public void onWin() {
         youWinText.SetActive(true);
         socket.Emit("game_end");
-        SceneManager.LoadScene(0);
     }
 
 	public void onDeath(string shooterId) {

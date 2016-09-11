@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using SocketIO;
 using System;
+using UnityEngine.SceneManagement;
 
 public class NetworkController : MonoBehaviour {
 	public GameObject socketObj;
@@ -88,11 +89,16 @@ public class NetworkController : MonoBehaviour {
                 Debug.Log("no more players, you win?");
                 clientSpaceShip.onWin();
             }
-
+				
             Debug.Log("Shooter id: " + shooterID);
             if(playerID.Equals(shooterID)) {
                 clientSpaceShip.kills++;
             }
+
+		});
+
+		mySocket.On ("game_won", (SocketIOEvent e) => {
+			SceneManager.LoadScene(0);
 		});
 
         mySocket.On("game_end", (SocketIOEvent e) => {
