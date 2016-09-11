@@ -86,10 +86,10 @@ public class NetworkController : MonoBehaviour {
 				clientSpaceShip.youWinText.SetActive(true);
             }
 
-            /*
-			SpaceShip myShip = GetComponent<SpaceShip>();
-			myShip.kills++;
-            */
+			if (shooterID.Equals(playerID)){
+				clientSpaceShip.kills++;
+			}
+            
 		});
 
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
