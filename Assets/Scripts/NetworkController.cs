@@ -29,7 +29,7 @@ public class NetworkController : MonoBehaviour {
 			players[id].transform.rotation = rotation;
 		});
 		mySocket.On ("location_update", (SocketIOEvent e) => {
-			string id = e.data.GetField("player_id").ToString();
+			string id = e.data.GetField("player_id").str;
 			if (players.ContainsKey(id)){
 				Vector3 location = getLocationField(e.data);
 				Quaternion rotation = getRotationField(e.data);
@@ -40,42 +40,45 @@ public class NetworkController : MonoBehaviour {
 			}
 		});
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
-			string id = e.data.GetField("id").ToString();
-			int hp = Int32.Parse(e.data.GetField("hp").ToString());
+			string id = e.data.GetField("id").str;
+			int hp = Int32.Parse(e.data.GetField("hp").str);
 			players[id].hp = hp;
 		});
 		mySocket.On ("shot_fired", (SocketIOEvent e) => {
-			string id = e.data.GetField("player_id").ToString();
+			string id = e.data.GetField("player_id").str;
+			Debug.Log("SHOT FIRED BY ID: " + id);
 			if (players.ContainsKey(id)) {
 				players[id].Fire();
 			}
 		});
 		mySocket.On ("player_death", (SocketIOEvent e) => {
-			string id = e.data.GetField("player_id").ToString();
+			string id = e.data.GetField("player_id").str;
 			players[id].onDeath();
 
 		});
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
-			string id = e.data.GetField("player_id").ToString();
+			string id = e.data.GetField("player_id").str;
 			if (!id.Equals(playerID)) {
 				return;
 			}
 		});
 		mySocket.On ("player_leave", (SocketIOEvent e) => {
-			string id = e.data.GetField("player_id").ToString();
+			string id = e.data.GetField("player_id").str;
+			Debug.Log("Player Disconnected! ID is " + id);
 			if (players.ContainsKey(id)){
+				Debug.Log("Player Destroyed!");
 				Destroy(players[id].spaceShip);
 				players.Remove(id);
 			}
 		});
         /*
 		mySocket.On ("ammo_spawn", (SocketIOEvent e) => {
-			Debug.Log("RECEIVED COMMAND! " + e.ToString());
+			Debug.Log("RECEIVED COMMAND! " + e.str);
 			int amount, x, y, z;
-			int.TryParse (e.data.GetField("amount").ToString(), out amount);
-			int.TryParse (e.data.GetField("location_x").ToString(), out x);
-			int.TryParse (e.data.GetField("location_y").ToString(), out y);
-			int.TryParse (e.data.GetField("location_z").ToString(), out z);
+			int.TryParse (e.data.GetField("amount").str, out amount);
+			int.TryParse (e.data.GetField("location_x").str, out x);
+			int.TryParse (e.data.GetField("location_y").str, out y);
+			int.TryParse (e.data.GetField("location_z").str, out z);
 			Debug.Log("RECEIVED COMMAND2!");
 			spawnAmmo(amount, x, y, z);
 		});
@@ -96,7 +99,7 @@ public class NetworkController : MonoBehaviour {
 	}
 
 	private float getFloatField(string key, JSONObject data) {
-		return float.Parse (data.GetField (key).ToString ());
+		return float.Parse (data.GetField (key).str);
 	}
 
 	private Vector3 getLocationField(JSONObject data) {
