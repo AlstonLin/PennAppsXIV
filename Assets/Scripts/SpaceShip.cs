@@ -7,7 +7,8 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public float MOVE_SPEED;
 	private const int STARTING_AMMO = 30;
 
-    public GameObject laser, spaceShip, socketObj;
+    public GameObject spaceShip, socketObj;
+    public Laser laser;
     public GameObject[] healthBars;
 	public CharacterController controller;
 
@@ -21,6 +22,8 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 	private float ammoAmount = STARTING_AMMO;
     private float fireTimeRemaining = 0;
     private bool pressed = false;
+
+	public int kills = 0;
 
     void Start() {
 		socket = socketObj.GetComponent (typeof(SocketIOComponent)) as SocketIOComponent;
@@ -78,7 +81,8 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		}
         */
         fireTimeRemaining = fireInterval;
-        GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
+        Laser newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as Laser;
+		newLaser.shooterId  = NetworkController.playerID;
 		ammoAmount--;
 		//setAmmoText ();
 		JSONObject json = new JSONObject ();
@@ -145,10 +149,11 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
-        GetHit();
+        Laser laser = collisionInfo.gameObject.GetComponent<Laser>();
+		GetHit (laser.shooterId);
     }
 
-    void GetHit() {
+	void GetHit(string shooterId) {
         hp--;
         Destroy(healthBars[hp]);
 		JSONObject json = new JSONObject ();
@@ -156,14 +161,15 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		json.AddField ("hp", (float)hp);
 		socket.Emit ("player_health_update", json);
         if(hp < 1) {
-            onDeath();
+			onDeath(shooterId);
         }
     }
 
-    public void onDeath() {
+	public void onDeath(string shooterId) {
         Destroy(spaceShip);
 		JSONObject json = new JSONObject ();
 		json.AddField ("player_id", NetworkController.playerID);
+		json.AddField ("shooter_id", shooterId);
 		socket.Emit ("player_death", json);
     }
 

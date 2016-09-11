@@ -60,10 +60,11 @@ public class SpaceShipSkeleton : MonoBehaviour, IGvrGazeResponder {
         GvrViewer.Controller.directRender = !GvrViewer.Controller.directRender;
     }
 
-    public void Fire() {
+	public void Fire(string shooterId) {
 		Debug.Log ("skeleton ship fire called");
-        GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
-    }
+        Laser newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as Laser;
+		newLaser.shooterId = shooterId;
+	}
 
     public void onDeath() {
         Destroy(spaceShip);
