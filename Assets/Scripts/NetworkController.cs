@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using SocketIO;
@@ -35,6 +36,7 @@ public class NetworkController : MonoBehaviour {
 			clientPrefab.transform.rotation = rotation;
 
 		});
+
 		mySocket.On ("set_asteroids", (SocketIOEvent e) => {
 			Debug.Log("ASTEROIDS! " + e.data.ToString());
 			List<JSONObject> asteroidLocations = e.data.GetField("data").list;
@@ -76,6 +78,7 @@ public class NetworkController : MonoBehaviour {
 				players[id].Fire(id);
 			}
 		});
+
 		mySocket.On ("player_death", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			string shooterID = e.data.GetField("shooter_id").str;
@@ -84,8 +87,7 @@ public class NetworkController : MonoBehaviour {
             if(players.Count == 0) {
                 //won't work if you stay alive as a bystander for the whole time
                 Debug.Log("no more players, you win?");
-				clientSpaceShip.youWinText.SetActive(true);
-				mySocket.Emit("game_won");
+                clientSpaceShip.onWin();
             }
 				
             Debug.Log("Shooter id: " + shooterID);
@@ -99,12 +101,17 @@ public class NetworkController : MonoBehaviour {
 			SceneManager.LoadScene(0);
 		});
 
+        mySocket.On("game_end", (SocketIOEvent e) => {
+            SceneManager.LoadScene(0); 
+        });
+
 		mySocket.On ("player_respawn", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			if (!id.Equals(playerID)) {
 				return;
 			}
 		});
+
 		mySocket.On ("player_leave", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
 			Debug.Log("Player Disconnected! ID is " + id);
