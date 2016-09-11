@@ -7,7 +7,8 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
     public float MOVE_SPEED;
 	private const int STARTING_AMMO = 30;
 
-    public GameObject laser, spaceShip, socketObj;
+    public GameObject spaceShip, socketObj, gameOverText;
+    public Laser laser;
     public GameObject[] healthBars;
 	public CharacterController controller;
 
@@ -21,12 +22,16 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 	private float ammoAmount = STARTING_AMMO;
     private float fireTimeRemaining = 0;
     private bool pressed = false;
+	private bool isDead = false;
+
+	public int kills = 0;
 
     void Start() {
 		socket = socketObj.GetComponent (typeof(SocketIOComponent)) as SocketIOComponent;
         startingPosition = transform.localPosition;
         SetGazedAt(false);
 		//setAmmoText ();
+		gameOverText.SetActive (false);
     }
 
     void LateUpdate() {
@@ -78,7 +83,11 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		}
         */
         fireTimeRemaining = fireInterval;
-        GameObject newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as GameObject;
+
+        //currently broken
+        Laser newLaser = Instantiate(laser, transform.TransformPoint(Vector3.forward * 15), Quaternion.Euler(transform.eulerAngles.x + 90, transform.eulerAngles.y, 0)) as Laser;
+		newLaser.shooterId  = NetworkController.playerID;
+
 		ammoAmount--;
 		//setAmmoText ();
 		JSONObject json = new JSONObject ();
@@ -102,6 +111,12 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
         moveForward ();
 		//Debug.Log(string.Format("x:{0:g}, y:{1:g}, z:{2:g}", transform.position.x, transform.position.y, transform.position.z));
+
+		if (isDead) {
+			MOVE_SPEED *= 0.97F;
+			gameOverText.transform.parent = null;
+			return;
+		}
 
 		if (fireTimeRemaining > 0) {
 			fireTimeRemaining -= Time.deltaTime;
@@ -141,15 +156,17 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		json.AddField ("rotation_y", transform.rotation.eulerAngles.y);
 		json.AddField ("rotation_z", transform.rotation.eulerAngles.z);
 		socket.Emit ("location_update", json);
-        Debug.Log(json);
 	}
 
     void OnCollisionEnter(Collision collisionInfo) {
         Debug.Log("spaceship: onCollisionEnter");
-        GetHit();
+
+        Laser laser = collisionInfo.gameObject.GetComponent<Laser>();
+        Debug.Log("laser id: " + laser.shooterId);
+		GetHit (laser.shooterId);
     }
 
-    void GetHit() {
+	void GetHit(string shooterId) {
         hp--;
         Destroy(healthBars[hp]);
 		JSONObject json = new JSONObject ();
@@ -157,15 +174,20 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 		json.AddField ("hp", (float)hp);
 		socket.Emit ("player_health_update", json);
         if(hp < 1) {
-            onDeath();
+			onDeath(shooterId);
         }
     }
 
-    public void onDeath() {
-        Destroy(spaceShip);
+
+	public void onDeath(string shooterId) {
+        Destroy(spaceShip, 5);
 		JSONObject json = new JSONObject ();
 		json.AddField ("player_id", NetworkController.playerID);
+		json.AddField ("shooter_id", shooterId);
 		socket.Emit ("player_death", json);
+
+		gameOverText.SetActive (true);
+		isDead = true;
     }
 
     #region IGvrGazeResponder implementation
