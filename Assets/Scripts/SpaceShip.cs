@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using SocketIO;
+using System.Collections;
 
 [RequireComponent(typeof(Collider))]
 public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
@@ -14,7 +16,7 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
 
     public TextMesh enemyHp, noOfKills;
 
-	private SocketIOComponent socket;
+	public SocketIOComponent socket;
     private Vector3 startingPosition;
 
 	public int hp;
@@ -184,6 +186,12 @@ public class SpaceShip : MonoBehaviour, IGvrGazeResponder {
         if(hp < 1) {
 			onDeath(shooterId);
         }
+    }
+
+    public void onWin() {
+        youWinText.SetActive(true);
+        socket.Emit("game_end");
+        SceneManager.LoadScene(0);
     }
 
 	public void onDeath(string shooterId) {
