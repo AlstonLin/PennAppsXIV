@@ -41,6 +41,7 @@ public class NetworkController : MonoBehaviour {
 		});
 		mySocket.On ("player_health_update", (SocketIOEvent e) => {
 			string id = e.data.GetField("player_id").str;
+            Debug.Log("HP: " + e.data);
 			int hp = Int32.Parse(e.data.GetField("hp").str);
 			players[id].hp = hp;
 		});
@@ -114,6 +115,6 @@ public class NetworkController : MonoBehaviour {
 		float rotationX = getFloatField("rotation_x", data);
 		float rotationY = getFloatField("rotation_y", data);
 		float rotationZ = getFloatField("rotation_z", data);
-		return new Quaternion(rotationX, rotationY, rotationZ, 0);
+        return Quaternion.Euler(rotationX, rotationY, rotationZ);
 	}
 }
